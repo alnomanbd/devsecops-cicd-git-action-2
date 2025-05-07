@@ -1,0 +1,39 @@
+name: DevSecOps CI/CD Pipeline
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+            - name: Navigate to project directory
+              run: cd project && ls -la
+            - name: Test (check if index.html exists)
+              run: |
+               cd project
+               echo "Checking if index.html exists..."
+               if [ -f index.html ]; then
+                     echo "index.html exists."
+               else
+                     echo "index.html does not exist."
+                     exit 1
+               fi
+            - name: Build (Copy to dist folder)
+              run: |
+                cd project
+                echo "Building the project..."
+                mkdir -p dist
+                cp index.html dist/
+                echo "Build completed. Files copied to dist folder."
+            - name: Deploy (Copy to server)
+              run: |
+                cd project
+                echo "Deploying the project..."
+                echo "Files in dist folder:"
+                ls -la dist
+                echo "Deployment completed."
